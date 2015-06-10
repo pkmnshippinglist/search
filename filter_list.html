@@ -1,11 +1,38 @@
 <html>
 <body>
-<form>
+<form id="parameters">
 Text is:<br>
 <input type="radio" name="filter-type" value="start"> At Start<br>
 <input type="radio" name="filter-type" value="contains"> In Phrase<br>
 Search for: <input type="text" name="filter"><br>
 Case sensitive? <input type="checkbox" name="case" value="case"><br>
 </form>
+<script>
+//get the input
+form = document.getElementById("parameters");
+//get the list
+//http://stackoverflow.com/questions/247483/http-get-request-in-javascript
+var xmlHttp = new XMLHttpRequest();
+xmlHttp.open("GET","listaz.html",true);
+xmlHttp.send(null);
+//this is done asyncrhonously, so need to check for when it's done to parse...
+xmlHttp.onreadystatechange = function() {
+    if (xmlHttp.readyState === 4) {
+        if (xmlHttp.status === 200) {
+            //turn raw HTML into a useful array
+            var str_array = xmlHttp.response.split("<br>\r\n");
+            //remove all the extraneous HTML from front and back
+            var regex = ".*Shipping.*";
+            var filtered_array = str_array.filter(function(s,i,a) {
+                
+            });
+            console.log(str_array);
+        }
+        else {
+            //there was a problem
+        }
+    }
+}
+</script>
 </body>
 </html>
