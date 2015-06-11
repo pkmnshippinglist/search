@@ -1,15 +1,5 @@
 <html>
-<body>
-<form id="parameters">
-Text is:<br>
-<input type="radio" name="filter-type" value="start"> At Start<br>
-<input type="radio" name="filter-type" value="contains"> In Phrase<br>
-Search for: <input type="text" name="filter"><br>
-Case sensitive? <input type="checkbox" name="case" value="case"><br>
-</form>
 <script>
-//get the input
-form = document.getElementById("parameters");
 //get the list
 //http://stackoverflow.com/questions/247483/http-get-request-in-javascript
 var xmlHttp = new XMLHttpRequest();
@@ -22,17 +12,42 @@ xmlHttp.onreadystatechange = function() {
             //turn raw HTML into a useful array
             var str_array = xmlHttp.response.split("<br>\r\n");
             //remove all the extraneous HTML from front and back
-            var regex = ".*Shipping.*";
+            var regex = new RegExp(".*Shipping.*");
             var filtered_array = str_array.filter(function(s,i,a) {
-                
+                return regex.test(s);
             });
-            console.log(str_array);
+            //first entry still has extra html; remove it
+            filtered_array[0] = filtered_array[0].split("<p>\r\n")[6];
+
+            //display the list while waiting for input....
+            //turn the array back into a string
+            var list_string = "";
+            for (var i = 0; i < filtered_array.length; i++) {
+                list_string = list_string.concat(filtered_array[i],"<br>");
+            }
+            document.getElementById("list").innerHTML = list_string;
+            
         }
         else {
             //there was a problem
         }
     }
 }
+
+//this runs when something is typed into the box
+function filter_ships() {
+    console.log("running!");
+}
+
 </script>
+<body>
+<form id="parameters">
+Text is:<br>
+<input type="radio" name="filter-type" value="start"> At Start<br>
+<input type="radio" name="filter-type" value="contains"> In Phrase<br>
+Search for: <input type="text" name="filter" oninput="filter_ships()"><br>
+Case sensitive? <input type="checkbox" name="case" value="case"><br>
+</form>
+<div id="list"></div>
 </body>
 </html>
