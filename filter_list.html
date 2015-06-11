@@ -5,6 +5,8 @@
 var xmlHttp = new XMLHttpRequest();
 xmlHttp.open("GET","listaz.html",true);
 xmlHttp.send(null);
+//initialize list of ships so we can access it globablly
+var filtered_array;
 //this is done asyncrhonously, so need to check for when it's done to parse...
 xmlHttp.onreadystatechange = function() {
     if (xmlHttp.readyState === 4) {
@@ -13,7 +15,7 @@ xmlHttp.onreadystatechange = function() {
             var str_array = xmlHttp.response.split("<br>\r\n");
             //remove all the extraneous HTML from front and back
             var regex = new RegExp(".*Shipping.*");
-            var filtered_array = str_array.filter(function(s,i,a) {
+            filtered_array = str_array.filter(function(s,i,a) {
                 return regex.test(s);
             });
             //first entry still has extra html; remove it
@@ -36,7 +38,32 @@ xmlHttp.onreadystatechange = function() {
 
 //this runs when something is typed into the box
 function filter_ships() {
-    console.log("running!");
+    //get the text
+    var search_str = document.getElementById("textinput").value;
+    //check on options to make appropriate regex
+    var case_sens = document.getElementById("case").checked;
+    var flag;
+    if (case_sens) {
+        flag = "";
+    }
+    else {
+        flag = "i";
+    }
+    //construct the regular expression
+    //note: this is kind of a kludge and if/when String.contains leaves
+    //experimental, that would be better
+    var searchex = new RegExp(".*".concat(search_str,".*"), flag);
+    //now filter for ships that match the search
+    var disp_array = filtered_array.filter(function(s,i,a) {
+        return searchex.test(s);
+    });
+    //display the ships
+    var list_string = "";
+    for (var i = 0; i < disp_array.length; i++) {
+        list_string = list_string.concat(disp_array[i],"<br>");
+    }
+    document.getElementById("list").innerHTML = list_string;
+    
 }
 
 </script>
@@ -45,8 +72,8 @@ function filter_ships() {
 Text is:<br>
 <input type="radio" name="filter-type" value="start"> At Start<br>
 <input type="radio" name="filter-type" value="contains"> In Phrase<br>
-Search for: <input type="text" name="filter" oninput="filter_ships()"><br>
-Case sensitive? <input type="checkbox" name="case" value="case"><br>
+Search for: <input type="text" name="filter" id="textinput" oninput="filter_ships()"><br>
+Case sensitive? <input type="checkbox" name="case" id="case" value="case"><br>
 </form>
 <div id="list"></div>
 </body>
