@@ -12,22 +12,15 @@ xmlHttp.onreadystatechange = function() {
     if (xmlHttp.readyState === 4) {
         if (xmlHttp.status === 200) {
             //turn raw HTML into a useful array
-            var str_array = xmlHttp.response.split("<br>\r\n");
+            var str_array = xmlHttp.response.split(/(?:<br>\r\n)|(?:<p>)/);
             //remove all the extraneous HTML from front and back
             var regex = new RegExp(".*Shipping.*");
             filtered_array = str_array.filter(function(s,i,a) {
                 return regex.test(s);
             });
-            //first entry still has extra html; remove it
-            filtered_array[0] = filtered_array[0].split("<p>\r\n")[6];
 
             //display the list while waiting for input....
-            //turn the array back into a string
-            var list_string = "";
-            for (var i = 0; i < filtered_array.length; i++) {
-                list_string = list_string.concat(filtered_array[i],"<br>");
-            }
-            document.getElementById("list").innerHTML = list_string;
+            document.getElementById("list").innerHTML = filtered_array.join("<br>");
             
         }
         else {
@@ -49,20 +42,37 @@ function filter_ships() {
     else {
         flag = "i";
     }
+    var radios = document.getElementsByName("filter-type");
+         
     //construct the regular expression
     //note: this is kind of a kludge and if/when String.contains leaves
     //experimental, that would be better
-    var searchex = new RegExp(".*".concat(search_str,".*"), flag);
+    var searchex = new RegExp(search_str.concat(".*"), flag);
     //now filter for ships that match the search
     var disp_array = filtered_array.filter(function(s,i,a) {
-        return searchex.test(s);
+        var loc = s.search(searchex);
+        //is the search term in the ship at all?
+        if (loc != -1) {
+            //if so, do we want it at start?
+            if (radios[0].checked && loc == 0) {
+                //if so and it is, return true
+                return true;
+            }
+            else if (!radios[0].checked) {
+                //if we don't care it's at start, return true
+                return true;
+            }
+            else {
+                //if we care and it's not at start, return false
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
     });
     //display the ships
-    var list_string = "";
-    for (var i = 0; i < disp_array.length; i++) {
-        list_string = list_string.concat(disp_array[i],"<br>");
-    }
-    document.getElementById("list").innerHTML = list_string;
+    document.getElementById("list").innerHTML = disp_array.join("<br>");
     
 }
 
