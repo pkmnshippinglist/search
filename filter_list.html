@@ -12,12 +12,15 @@ xmlHttp.onreadystatechange = function() {
     if (xmlHttp.readyState === 4) {
         if (xmlHttp.status === 200) {
             //turn raw HTML into a useful array
-            var str_array = xmlHttp.response.split(/(?:<br>\r\n)|(?:<p>)/);
+            //split on all forms of line breaks
+            var str_array = 
+                xmlHttp.response.split(/(?:<br>\r\n)|(?:<br>\n)|(?:<br>)|(?:<p>)/);
             //remove all the extraneous HTML from front and back
             var regex = new RegExp(".*Shipping.*");
             filtered_array = str_array.filter(function(s,i,a) {
                 return regex.test(s);
             });
+            console.log(filtered_array);
 
             //say how many there are
             document.getElementById("numbers").innerHTML = filtered_array.length+" results";
@@ -45,6 +48,8 @@ function filter_ships() {
         flag = "i";
     }
     var radios = document.getElementsByName("filter-type");
+    
+    console.log(filtered_array);
          
     //construct the regular expression
     //note: this is kind of a kludge and if/when String.contains leaves
