@@ -7,14 +7,13 @@ xmlHttp.open("GET","listaz.html",true);
 xmlHttp.send(null);
 //initialize list of ships so we can access it globablly
 var filtered_array;
-//this is done asyncrhonously, so need to check for when it's done to parse...
+//this is done asynchronously, so need to check for when it's done to parse...
 xmlHttp.onreadystatechange = function() {
     if (xmlHttp.readyState === 4) {
         if (xmlHttp.status === 200) {
             //turn raw HTML into a useful array
             //split on all forms of line breaks
-            var str_array = 
-                xmlHttp.response.split(/(?:<br>\r\n)|(?:<br>\n)|(?:<br>)|(?:<p>)/);
+            var str_array = xmlHttp.response.split(/(?:<br>)|(?:<p>)/);
             //remove all the extraneous HTML from front and back
             var regex = new RegExp(".*Shipping.*");
             filtered_array = str_array.filter(function(s,i,a) {
@@ -34,10 +33,11 @@ xmlHttp.onreadystatechange = function() {
     }
 }
 
-//this runs when something is typed into the box
+//this runs when something is typed into the box or options change
 function filter_ships() {
-    //get the text
-    var search_str = document.getElementById("textinput").value;
+    //get the text, escape all regex operators
+    var search_str = document.getElementById("textinput").value
+        .replace("(","\\(").replace(")","\\)").replace("+","\\+").replace("*","\\*");
     //check on options to make appropriate regex
     var case_sens = document.getElementById("case").checked;
     var flag;
@@ -48,25 +48,23 @@ function filter_ships() {
         flag = "i";
     }
     var radios = document.getElementsByName("filter-type");
-    
-    console.log(filtered_array);
-         
+            
     //construct the regular expression
     //note: this is kind of a kludge and if/when String.contains leaves
     //experimental, that would be better
     var searchex = new RegExp(search_str.concat(".*"), flag);
     //now filter for ships that match the search
     var disp_array = filtered_array.filter(function(s,i,a) {
-        var loc = s.search(searchex);
+        var loc = s.trim().search(searchex);
         //is the search term in the ship at all?
         if (loc != -1) {
-            //if so, do we want it at start?
-            if (radios[0].checked && loc == 0) {
-                //if so and it is, return true
+            if (!radios[0].checked) {
+                //if we don't care it's at start, return true
                 return true;
             }
-            else if (!radios[0].checked) {
-                //if we don't care it's at start, return true
+            //if so, do we want it at start?
+            else if (radios[0].checked && loc == 0) {
+                //if so and it is, return true
                 return true;
             }
             else {
@@ -191,13 +189,13 @@ div.rounded {
 
 <form id="parameters">
 Text is:<br>
-<input type="radio" name="filter-type" value="start"> At Start<br>
-<input type="radio" name="filter-type" value="contains"> In Phrase<br>
+<input type="radio" name="filter-type" value="start" onchange="filter_ships()"> At Start<br>
+<input type="radio" name="filter-type" value="contains" onchange="filter_ships()"> In Phrase<br>
 Search for: <input type="text" name="filter" id="textinput" oninput="filter_ships()"><br>
-Case sensitive? <input type="checkbox" name="case" id="case" value="case"><br>
+Case sensitive? <input type="checkbox" name="case" id="case" value="case" onchange="filter_ships()"><br>
 </form>
 <div id="numbers"></div>
-<div id="list" class="rounded"></div>
+<div id="list" class="rounded">Loading ships, please wait...</div>
 <p></p><hr align="left" width="300"><p>
 
 </p><p align="right"><font size="2"><img src="http://shipping.bulbagarden.net/ner-disclaimer.png"></font></p><font size="2">
