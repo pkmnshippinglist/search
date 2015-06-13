@@ -1,0 +1,125 @@
+<html>
+<script>
+var xmlHttp=new XMLHttpRequest;xmlHttp.open("GET","listaz.html",!0);xmlHttp.send(null);var filtered_array;xmlHttp.onreadystatechange=function(){if(4===xmlHttp.readyState&&200===xmlHttp.status){var a=/.*Shipping.*/;filtered_array=xmlHttp.response.split(/(?:<br>)|(?:<p>)/).filter(function(b,c,d){return a.test(b)});console.log(filtered_array);document.getElementById("numbers").innerHTML=filtered_array.length+" results";document.getElementById("list").innerHTML=filtered_array.join("<br>")}};
+function filter_ships(){var a=document.getElementById("textinput").value.replace("(","\\(").replace(")","\\)").replace("+","\\+").replace("*","\\*"),b;b=document.getElementById("case").checked?"":"i";var c=document.getElementsByName("filter-type"),d=new RegExp(a.concat(".*"),b),a=filtered_array.filter(function(a,b,e){a=a.trim().search(d);return-1!=a?c[0].checked?c[0].checked&&0==a?!0:!1:!0:!1});document.getElementById("numbers").innerHTML=a.length+" results";document.getElementById("list").innerHTML=
+a.join("<br>")};
+</script>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252"><title>Neverending Romance | Basic Search</title>
+</head><body bgcolor="#F5F5F5" link="#DB70DB" vlink="#754C78"><br><br>
+<link rel="shortcut icon" href="http://www.bulbagarden.net/shipping/luvdisc-16.ico">
+<style text="text/css">
+
+<!--
+A:link { text-decoration: none; color:"#4682B4" }
+A:visited { text-decoration: none; color:"#D8BFD8" }
+
+A:hover { text-decoration: none; color: "#4682B4" }
+-->
+
+#navigation {
+background-color: #FFFFFF;
+color: #FFFFFF;
+-moz-border-radius: 15px;
+border-radius: 15px;
+border-bottom-radius: 15px;
+border-width: 3px;
+border-style: solid;
+border-color: #D3D3D3;
+float: right;
+margin-right: 7px;
+margin-left: 6px;
+}
+
+#navigation h2, #navigation hr {
+display: block
+padding: 10px 5px;
+border-bottom-width: 1px;
+border-bottom-style: solid;
+border-bottom-color: #FFFFFF;
+}
+
+#navigation ul {
+margin: 0px;
+padding: 0px;
+list-style: none;
+}
+
+#navigation ul li {
+border-bottom-width: 1px;
+border-bottom-style: solid;
+border-bottom-color: #FFFFFF;
+}
+
+#navigation ul li a {
+display: block;
+background-color: #FFFFFF;
+text-decoration: none;
+border-bottom-width: 1px;
+border-bottom-style: solid;
+border-bottom-color: #FFFFFF;
+}
+
+#navigation ul li a:hover {
+background-color: #F5F5F5;
+}
+
+div.rounded {  
+  background: #FFFFFF  no-repeat bottom center; 
+  border: #F7B3DA 2px solid;
+  border-radius: 10em/3em;
+  padding-bottom: 10px;  
+  padding-top: 20px;  
+  font-size:0.875em;
+  font-family:"Lucida Console", Monaco, monospace;
+}
+
+</style>
+
+<div id="navigation">
+
+<h2><center><a href="http://shipping.bulbagarden.net/">Neverending</a><br>
+<img src="http://www.bulbagarden.net/shipping/image/rose-head.gif"><a href="http://shipping.bulbagarden.net/">Romance</a></center></h2>
+
+<ul type="circle">
+<li><a href="http://shipping.bulbagarden.net/news.html">Site News</a></li>
+<li><a href="http://shipping.bulbagarden.net/listaz.html">A - Z</a></li>
+<li><font size="2"><a href="http://shipping.bulbagarden.net/side/special.html">--Special 'Ships</a></font></li>
+<li><font size="2"><a href="http://shipping.bulbagarden.net/side/conquest.html">--Conquest 'Ships</a></font></li>
+<li><font size="2"><a href="http://shipping.bulbagarden.net/side/untouchable.html">--Untouchables</a></font></li>
+<li><font size="2"><a href="http://shipping.bulbagarden.net/side/object.html">--Objects</a></font></li>
+<li><font size="2"><a href="http://shipping.bulbagarden.net/side/jp.html">--Jp pairs</a></font></li>
+<li><font size="2"><a href="http://shipping.bulbagarden.net/side/crossover.html">--Crossover 'Ships</a></font></li>
+<li><font size="2"><a href="http://shipping.bulbagarden.net/side/alternate.html">--Alternate Spellings</a></font></li>
+<li><font size="2"><a href="http://jengashipping.livejournal.com/1455.html">--Accents</a></font></li>
+<li><a href="http://shipping.bulbagarden.net/submissions.html">Submission Nuances</a></li>
+<li><a href="http://shipping.bulbagarden.net/listam.html">A - K</a></li>
+<li><a href="http://shipping.bulbagarden.net/listnz.html">L - Z</a></li>
+<li><a href="http://shipping.bulbagarden.net/side/currentevent.html">XY Ships</a></li>
+<li><a href="http://shipping.bulbagarden.net/links.html">Links</a></li>
+<li><a href="http://shipping.bulbagarden.net/side/project-indie.html">Independent Projects</a></li>
+<li><a href="http://www.freewebs.com/incompletelove/apps/guestbook/">Guestbook</a></li>
+<li><a href="http://bmgf.bulbagarden.net/">BMGf</a></li>
+<li><a href="http://pkmnshippinglist.tumblr.com/">Tumblr</a></li>
+</ul>
+</div>
+<table align="center" width="70%"><tbody><tr><td align="left" valign="center">
+
+<hr align="right" width="300"><p>
+
+<form id="parameters">
+Text is:<br>
+<input type="radio" name="filter-type" value="start" onchange="filter_ships()"> At Start<br>
+<input type="radio" name="filter-type" value="contains" onchange="filter_ships()> In Phrase<br>
+Search for: <input type="text" name="filter" id="textinput" oninput="filter_ships()"><br>
+Case sensitive? <input type="checkbox" name="case" id="case" value="case" onchange="filter_ships()"><br>
+</form>
+<div id="numbers"></div>
+<div id="list" class="rounded">Loading ships, please wait...</div>
+<p></p><hr align="left" width="300"><p>
+
+</p><p align="right"><font size="2"><img src="http://shipping.bulbagarden.net/ner-disclaimer.png"></font></p><font size="2">
+</font></td></tr></tbody></table><br><br>
+
+
+</body></html>
